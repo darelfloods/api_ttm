@@ -1,0 +1,26 @@
+{"ERROR":{
+  "method": "request.method",
+  "url": "str(request.url)",
+  "headers": "dict(request.headers)",
+  "body": "await request.body()"
+}},
+{"ERROR":{
+  "method": "request.method",
+  "url": "str(request.url)",
+  "headers": "dict(request.headers)",
+  "body": "await request.body()"
+}}
+=======
+{"ERROR":{
+  "method": "request.method",
+  "url": "str(request.url)",
+  "headers": "dict(request.headers)",
+  "body": "await request.body()"
+}},
+{"ERROR":{
+  "method": "request.method",
+  "url": "str(request.url)",
+  "headers": "dict(request.headers)",
+  "body": "await request.body()"
+}}
+uvicorn main:app --reload
