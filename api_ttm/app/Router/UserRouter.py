@@ -20,6 +20,7 @@ async def get_all(
 @router.post("/add", tags=["Utilisateurs"], response_model=UserSchema.Read, status_code=status.HTTP_201_CREATED)
 async def add(
         user: UserSchema.Create,
+        current_user: Annotated[UserSchema.Read, Depends(IsAuthenticated.get_current_user)],
         request: Request,
         db: Session = Depends(DatabaseSession.get_db)
 ):

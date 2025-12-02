@@ -63,11 +63,19 @@ async def callback_function(
 ):
     print(f"ça callback_url: {body}")
     print(f"ça user_id: {user_id}")
-    if body['order_status'] == '200':
+
+    # L'API MyPayGa peut renvoyer order_status en string ou en nombre, avec 0 ou 200 comme succès
+    raw_status = body.get('order_status') or body.get('request_status')
+    try:
+        status = int(str(raw_status))
+    except (TypeError, ValueError):
+        status = None
+
+    if status in (0, 200):
         await MyPayGaController.take_rate_by_id(db=db, user_id=user_id, rate_id=rate_id, request=request)
-        return {"message": body['message'], "request_status": body['order_status']}
+        return {"message": body.get('message'), "request_status": raw_status}
     else:
-        return {"message": body['message'], "request_status": body['order_status']}
+        return {"message": body.get('message'), "request_status": raw_status}
 
 
 @router.post("/success_url", tags=["My Pay Ga"])

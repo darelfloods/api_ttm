@@ -11,9 +11,10 @@ router = APIRouter()
 
 @router.get("/all", tags=["Evènement"])
 async def get_all(
+        limit: int = 1000,
         db: Session = Depends(DatabaseSession.get_db)
 ):
-    return await EventController.get_all(db)
+    return await EventController.get_all(db=db, limit=limit)
 
 
 @router.get("/get_by_timer/{start_at}/{end_at}", tags=["Evènement"])

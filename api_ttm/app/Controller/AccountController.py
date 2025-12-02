@@ -10,7 +10,11 @@ from . import EventController, UserController
 
 ################################### Read Function #####################################################################
 async def get_all(db: Session):
-    return db.query(AccountModel.Account).all()
+    # Optimisation : utiliser eager loading pour charger les relations en une seule requête
+    from sqlalchemy.orm import joinedload
+    return db.query(AccountModel.Account)\
+        .options(joinedload(AccountModel.Account.user), joinedload(AccountModel.Account.rate))\
+        .all()
 
 
 async def get_by_id(db: Session, account_id: int):
@@ -28,11 +32,14 @@ async def get_by_user_id(db: Session, user_id: int):
 
 
 async def get_by_user_role(db: Session, role: str):
-    accounts = []
-    users = await UserController.get_by_role(db=db, role=role)
-    for user in users:
-        accounts.append(db.query(AccountModel.Account).filter(AccountModel.Account.user_id == user.id).first())
-    return accounts
+    # Optimisation : utiliser un join au lieu d'une boucle pour éviter le problème N+1
+    from sqlalchemy.orm import joinedload
+    from ..Db.Model import UserModel
+    return db.query(AccountModel.Account)\
+        .join(UserModel.User, AccountModel.Account.user_id == UserModel.User.id)\
+        .filter(UserModel.User.role == role)\
+        .options(joinedload(AccountModel.Account.user), joinedload(AccountModel.Account.rate))\
+        .all()
 
 
 ################################### Add Function #####################################################################
