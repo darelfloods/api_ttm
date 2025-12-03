@@ -1,6 +1,14 @@
+import os
+import sys
+
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+
+# S'assurer que le dossier contenant main.py est dans sys.path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
 from core.config import settings
 from app.Api import ProductApi, SingPayApi, MyPayGaApi
