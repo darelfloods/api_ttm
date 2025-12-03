@@ -4,7 +4,10 @@ from datetime import datetime, timedelta
 from jose import jwt
 
 from ..Db.Model import UserModel, AccountModel
-from core.config import settings
+try:
+    from core.config import settings
+except ModuleNotFoundError:
+    from api_ttm.core.config import settings
 from ..Schema import UserSchema, EventSchema
 from . import EventController
 

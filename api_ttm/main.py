@@ -5,12 +5,16 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-# S'assurer que le dossier contenant main.py est dans sys.path
+# S'assurer que le dossier contenant main.py est dans sys.path (exécution locale)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-from core.config import settings
+# Import compatible local (script) + Render (module api_ttm.main)
+try:
+    from core.config import settings  # exécution depuis le dossier api_ttm
+except ModuleNotFoundError:  # exécution comme module 'api_ttm.main' (Render)
+    from api_ttm.core.config import settings
 from app.Api import ProductApi, SingPayApi, MyPayGaApi
 from app.Db import Migration, Connection
 from app.Router import AuthRouter, UserRouter, RateRouter, AccountRouter, EventRouter, PriceListRouter

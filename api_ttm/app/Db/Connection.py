@@ -2,7 +2,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from core.config import settings
+
+try:
+    from core.config import settings
+except ModuleNotFoundError:
+    from api_ttm.core.config import settings
 
 # Configuration de la connexion PostgreSQL
 engine = create_engine(settings.DATABASE_URL)
