@@ -10,7 +10,16 @@ from . import EventController
 
 
 def verify_password(plain_password, hashed_password):
-    return settings.pwd_context.verify(plain_password, hashed_password)
+    try:
+        # Bcrypt a une limite de 72 octets pour les mots de passe
+        # On tronque le mot de passe si nécessaire
+        if len(plain_password.encode('utf-8')) > 72:
+            plain_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+        return settings.pwd_context.verify(plain_password, hashed_password)
+    except ValueError as e:
+        # Si bcrypt échoue à cause de la limite de 72 octets, on retourne False
+        print(f"ERREUR verify_password: {e}")
+        return False
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
