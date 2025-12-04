@@ -8,10 +8,7 @@ from typing import Annotated, Dict
 from ..Middleware import DatabaseSession, IsAuthenticated
 from ..Controller import MyPayGaController
 from ..Schema import MyPayGaSchema, UserSchema
-try:
-    from core.config import settings
-except ModuleNotFoundError:
-    from api_ttm.core.config import settings
+from core.config import settings
 
 
 router = APIRouter()
