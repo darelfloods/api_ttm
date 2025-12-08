@@ -10,24 +10,7 @@ from . import EventController
 
 ################################### Read Function #####################################################################
 async def get_all(db: Session):
-    try:
-        return db.query(RateModel.Rate).all()
-    except Exception as e:
-        # Si les nouvelles colonnes n'existent pas encore, retourner les données de base
-        print(f"Erreur lors de la récupération des tarifs: {e}")
-        raise HTTPException(status_code=500, detail="Erreur lors de la récupération des tarifs. Veuillez vérifier que la base de données est à jour.")
-
-
-async def get_active_rates(db: Session):
-    """Récupère uniquement les tarifs actifs, triés par display_order"""
-    try:
-        return db.query(RateModel.Rate).filter(
-            RateModel.Rate.is_active == True
-        ).order_by(RateModel.Rate.display_order.asc()).all()
-    except Exception as e:
-        # Fallback: retourner tous les tarifs si la colonne is_active n'existe pas
-        print(f"Colonne is_active non trouvée, retour de tous les tarifs: {e}")
-        return db.query(RateModel.Rate).all()
+    return db.query(RateModel.Rate).all()
 
 
 ################################### Add Function #####################################################################
@@ -35,13 +18,7 @@ async def add(db: Session, rate: RateSchema.Create, current_user: UserSchema.Rea
     db_rate = RateModel.Rate(
         libelle=rate.libelle,
         price=rate.price,
-        credit=rate.credit,
-        image_url=rate.image_url,
-        badge_icon=rate.badge_icon,
-        badge_text=rate.badge_text,
-        is_popular=rate.is_popular,
-        display_order=rate.display_order,
-        is_active=rate.is_active
+        credit=rate.credit
     )
     db.add(db_rate)
     db.commit()
@@ -63,12 +40,6 @@ async def update_rate(db: Session, rate: RateSchema.Read, id: int, current_user:
         libelle=rate.libelle,
         price=rate.price,
         credit=rate.credit,
-        image_url=rate.image_url,
-        badge_icon=rate.badge_icon,
-        badge_text=rate.badge_text,
-        is_popular=rate.is_popular,
-        display_order=rate.display_order,
-        is_active=rate.is_active,
         updated_at=func.now()
     )
     db.execute(query)
