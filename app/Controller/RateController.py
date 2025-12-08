@@ -13,12 +13,25 @@ async def get_all(db: Session):
     return db.query(RateModel.Rate).all()
 
 
+async def get_active_rates(db: Session):
+    """Récupère uniquement les tarifs actifs, triés par display_order"""
+    return db.query(RateModel.Rate).filter(
+        RateModel.Rate.is_active == True
+    ).order_by(RateModel.Rate.display_order.asc()).all()
+
+
 ################################### Add Function #####################################################################
 async def add(db: Session, rate: RateSchema.Create, current_user: UserSchema.Read, request: Request):
     db_rate = RateModel.Rate(
         libelle=rate.libelle,
         price=rate.price,
-        credit=rate.credit
+        credit=rate.credit,
+        image_url=rate.image_url,
+        badge_icon=rate.badge_icon,
+        badge_text=rate.badge_text,
+        is_popular=rate.is_popular,
+        display_order=rate.display_order,
+        is_active=rate.is_active
     )
     db.add(db_rate)
     db.commit()
@@ -40,6 +53,12 @@ async def update_rate(db: Session, rate: RateSchema.Read, id: int, current_user:
         libelle=rate.libelle,
         price=rate.price,
         credit=rate.credit,
+        image_url=rate.image_url,
+        badge_icon=rate.badge_icon,
+        badge_text=rate.badge_text,
+        is_popular=rate.is_popular,
+        display_order=rate.display_order,
+        is_active=rate.is_active,
         updated_at=func.now()
     )
     db.execute(query)

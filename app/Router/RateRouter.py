@@ -16,6 +16,14 @@ async def get_all(
     return await RateController.get_all(db)
 
 
+@router.get("/active", tags=["Tarification"], response_model=list[RateSchema.Read])
+async def get_active(
+        db: Session = Depends(DatabaseSession.get_db)
+):
+    """Récupère uniquement les offres actives pour le site public"""
+    return await RateController.get_active_rates(db)
+
+
 @router.post("/add", tags=["Tarification"], status_code=status.HTTP_201_CREATED, response_model=RateSchema.Read)
 async def add(
         rate: RateSchema.Create,
